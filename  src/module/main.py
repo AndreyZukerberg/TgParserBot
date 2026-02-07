@@ -1,17 +1,21 @@
-import telebot
 import os
+import telebot
 from dotenv import load_dotenv
 from ParserHabr import Parser
 
-load_dotenv()
 
-TOKEN = os.getenv('TELEGRAM_TOKEN')
-TG = os.getenv('CHANNEL_ID')
+class BotApplication:
+    def __init__(self):
+        load_dotenv()
+        self.token = os.getenv('TELEGRAM_TOKEN')
+        self.tg_id = os.getenv('CHANNEL_ID')
+        self.bot = telebot.TeleBot(self.token)
+        self.parser = Parser(self.bot, self.tg_id)
 
-bot = telebot.TeleBot(TOKEN)
+    def run(self):
+        self.parser.firstMessage()
+        self.bot.polling(none_stop=True, timeout=20)
 
-parser = Parser(bot, TG)
 
 if __name__ == '__main__':
-    parser.firstMessage()
-    bot.polling(none_stop=True, timeout=20)
+    BotApplication().run()
